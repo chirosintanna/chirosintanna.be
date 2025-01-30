@@ -128,10 +128,17 @@ main img {
 }
 
 main h2 {
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   font-weight: bold;
   font-size: 1.125rem;
   line-height: 1.75rem;
+}
+
+main h3 {
+  margin-top: 0.5rem;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 1rem;
 }
 
 main p {
