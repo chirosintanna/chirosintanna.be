@@ -1,0 +1,146 @@
+:root {
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --gray-950: #030712;
+  --red-50: #fff0f3;
+  --red-100: #ffdde3;
+  --red-200: #ffc1cc;
+  --red-300: #ff95a7;
+  --red-400: #ff5976;
+  --red-500: #ff264c;
+  --red-600: #fc0631;
+  --red-700: #e00027;
+  --red-800: #af0523;
+  --red-900: #900c23;
+  --red-950: #50000e;
+}
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  src: url('./font/SchibstedGrotesk-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  src: url('./font/SchibstedGrotesk-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  src: url('./font/SchibstedGrotesk-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  src: url('./font/SchibstedGrotesk-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+body {
+  font-family: 'Schibsted Grotesk', sans-serif;
+  background: var(--gray-100);
+}
+
+/* HEADER */
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0.5rem;
+  position: fixed;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.25rem 1rem;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(8px);
+  background-color: rgb(255 255 255 / 0.3);
+}
+
+.header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.header-main img {
+  height: 3rem;
+  border-radius: 0.25rem;
+}
+
+.header-main h1 {
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+header nav ul {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+header nav a {
+  color: var(--gray-800);
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+header nav a:hover,
+header nav a.selected {
+  color: var(--gray-950);
+  border-color: var(--red-800);
+}
+
+/* MAIN */
+
+main {
+  padding: 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.top-spacing {
+  padding-top: 4rem;
+}
+
+main img {
+  border-radius: 0.5rem;
+}
+
+main h2 {
+  margin-top: 1rem;
+  font-weight: bold;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+main p {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+main ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
