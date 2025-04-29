@@ -10,17 +10,17 @@
   --gray-800: #1f2937;
   --gray-900: #111827;
   --gray-950: #030712;
-  --red-50: #fff0f3;
-  --red-100: #ffdde3;
-  --red-200: #ffc1cc;
-  --red-300: #ff95a7;
-  --red-400: #ff5976;
-  --red-500: #ff264c;
-  --red-600: #fc0631;
-  --red-700: #e00027;
-  --red-800: #af0523;
-  --red-900: #900c23;
-  --red-950: #50000e;
+  --red-50: #fdf4f3;
+  --red-100: #fce7e7;
+  --red-200: #f8d3d4;
+  --red-300: #f2afb0;
+  --red-400: #ea8286;
+  --red-500: #dd565e;
+  --red-600: #c93546;
+  --red-700: #a92739;
+  --red-800: #972639;
+  --red-900: #792234;
+  --red-950: #430e17;
 }
 
 @font-face {
@@ -56,6 +56,13 @@ body {
   background: var(--gray-100);
 }
 
+svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
 /* HEADER */
 
 .header-container {
@@ -64,6 +71,7 @@ body {
   width: 100%;
   padding: 0.5rem;
   position: fixed;
+  z-index: 1;
 }
 
 header {
@@ -112,15 +120,12 @@ header nav a.selected {
 
 /* MAIN */
 
-main {
-  padding: 1rem;
-  padding-bottom: 2rem;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
 .top-spacing {
   padding-top: 4rem;
+}
+
+main {
+  font-size: 0.875rem;
 }
 
 main img {
@@ -128,8 +133,10 @@ main img {
 }
 
 main h2 {
-  margin-top: 1.5rem;
+  text-transform: uppercase;
+  margin-top: 0.5rem;
   font-weight: bold;
+  letter-spacing: 1px;
   font-size: 1.125rem;
   line-height: 1.75rem;
 }
@@ -163,6 +170,32 @@ main a:hover {
   border-color: var(--red-800);
 }
 
+.container {
+  padding: 1.5rem 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.images {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+section.contrast {
+  background-color: var(--gray-900);
+  color: var(--gray-200);
+  position: relative;
+}
+
+/* AFDELINGEN */
+
 .afdelingen {
   display: grid;
   grid-template-columns: 1fr;
@@ -182,4 +215,36 @@ main a:hover {
 
 .afdelingen section img {
   margin-top: auto;
+}
+
+/* COMPONENTS */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 0.25rem;
+  background-image: linear-gradient(20deg, var(--gray-800), var(--gray-400));
+  background-size: 200% 200%;
+  color: var(--gray-50);
+  border: none;
+  font-size: 1rem;
+  transition: background-position 0.3s;
+}
+
+.btn:hover {
+  background-position: 100% 100%;
+}
+
+.btn svg {
+  transition: transform 0.3s;
+}
+
+.btn:hover svg {
+  transform: scale(1.2);
+}
+
+.btn.primary {
+  background-image: linear-gradient(20deg, var(--red-800), var(--red-400));
 }
