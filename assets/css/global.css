@@ -51,6 +51,7 @@ header {
   min-width: 5rem;
   min-height: 5rem;
   filter: drop-shadow(0 0 9px rgba(0, 0, 0, .08));
+  z-index: 101;
 }
 
 .header-logo {
@@ -68,9 +69,9 @@ header {
 
 header nav {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   padding-left: max(10vw, 5rem);
 }
 
@@ -85,33 +86,73 @@ header nav {
   color: black;
 }
 
-header ul {
-  display: flex;
-  align-items: center;
-  padding: 0 0.25rem;
+.menu {
+  padding: 3px;
+  cursor: pointer;
 }
+
+.menu svg {
+  width: 24px;
+  height: 24px;
+  transition: color 0.3s ease;
+}
+
+.menu:hover svg {
+  color: var(--red-900);
+}
+
+.menu input,
+.menu input:not(:checked) ~ .menu-hide,
+.menu input:checked ~ .menu-show {
+  display: none;
+}
+
+header ul {
+  position: absolute;
+  top: 46px;
+  left: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background-color: var(--gray-100);
+  transition: transform 0.3s ease;
+}
+
+.menu:has(input:checked) ~ ul {
+  transform: translateX(-100%);
+} 
 
 header ul a {
   padding: 0.25rem 0.25rem;
   color: var(--gray-800);
   border-radius: 0.5rem;
   transition: color 0.3s ease;
-  font-size: 0.875rem;
-}
-
-@media screen and (min-width: 560px) {
-  header ul {
-    gap: 0.25rem;
-  }
-
-  header ul a {
-    font-size: 1rem;
-  }
 }
 
 header ul a:hover,
 header ul a.selected {
   color: var(--red-900);
+}
+
+@media screen and (min-width: 640px) {
+  .menu {
+    display: none;
+  }
+
+  header ul {
+    position: static;
+    width: unset;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 0.25rem;
+    transition: none;
+  }
+
+  .menu:has(input:checked) ~ ul {
+    transform: none;
+  } 
 }
 
 /* MAIN */
@@ -174,7 +215,7 @@ main ul {
 
 main a {
   color: var(--red-800);
-  border-bottom: 2px solid var(--red-800);
+  border-bottom: 1px solid var(--red-800);
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 
