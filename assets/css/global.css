@@ -298,6 +298,7 @@ footer h3 {
 
 .btn:hover {
   background-position: 100% 100%;
+  color: var(--gray-50);
 }
 
 .btn svg {
