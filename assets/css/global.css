@@ -69,16 +69,16 @@ header {
 header nav {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   padding: 0.5rem 1rem;
   padding-left: max(10vw, 5rem);
-  height: 46px;
 }
 
 .header-main {
   font-size: 1.25rem;
   color: var(--red-900);
   white-space: nowrap;
-  padding: 0 1rem;
+  padding: 0 0.5rem;
 }
 
 .header-main:hover {
@@ -88,14 +88,25 @@ header nav {
 header ul {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  padding: 0 0.25rem;
 }
 
 header ul a {
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.25rem;
   color: var(--gray-800);
   border-radius: 0.5rem;
   transition: color 0.3s ease;
+  font-size: 0.875rem;
+}
+
+@media screen and (min-width: 560px) {
+  header ul {
+    gap: 0.25rem;
+  }
+
+  header ul a {
+    font-size: 1rem;
+  }
 }
 
 header ul a:hover,
@@ -179,14 +190,21 @@ main a:hover {
 
 .split {
   display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
+}
+
+@media screen and (min-width: 560px) {
+  .split {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
 }
 
 .images {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  max-width: 320px;
 }
 
 .contrast {
@@ -282,13 +300,10 @@ footer h3 {
 }
 
 .btn svg {
+  flex-shrink: 0;
   transition: transform 0.3s;
 }
 
 .btn:hover svg {
   transform: scale(1.2);
-}
-
-.btn.primary {
-  background-image: linear-gradient(20deg, var(--red-800), var(--red-400));
 }
