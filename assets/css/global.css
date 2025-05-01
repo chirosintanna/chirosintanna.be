@@ -109,6 +109,10 @@ header ul a.selected {
   padding-top: max(10vw, 5rem);
 }
 
+.bottom-spacing {
+  padding-bottom: 2rem;
+}
+
 main {
   font-size: 0.875rem;
 }
@@ -168,7 +172,7 @@ main a:hover {
 }
 
 .container {
-  padding: 1rem;
+  padding: 1rem 1rem 1.5rem;
   max-width: 960px;
   margin: 0 auto;
 }
@@ -185,8 +189,46 @@ main a:hover {
   gap: 0.5rem;
 }
 
-section.contrast {
+.contrast {
   background-color: var(--gray-900);
+  color: var(--gray-200);
+}
+
+/* FOOTER */
+
+footer {
+  background-color: var(--gray-900);
+  color: var(--gray-400);
+  padding: 1rem 0;
+}
+
+footer .container {
+  display: flex;
+  justify-content: space-between;
+}
+
+footer .copyright {
+  margin-top: 0.5rem;
+  font-size: 0.825rem;
+}
+
+footer h3 {
+  font-size: 1.25rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.footer-links svg {
+  width: 24px;
+  height: 24px;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover svg {
   color: var(--gray-200);
 }
 
@@ -198,18 +240,24 @@ section.contrast {
   gap: 3rem;
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 560px) {
   .afdelingen {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-.afdelingen section {
+@media screen and (min-width: 860px) {
+  .afdelingen {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.afdeling {
   display: flex;
   flex-direction: column;
 }
 
-.afdelingen section img {
+.afdeling img {
   margin-top: auto;
 }
 
