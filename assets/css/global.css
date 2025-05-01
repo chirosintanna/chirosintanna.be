@@ -174,12 +174,13 @@ main ul {
 
 main a {
   color: var(--red-800);
-  border-bottom: 2px solid transparent;
-  transition: border-color 0.2s ease;
+  border-bottom: 2px solid var(--red-800);
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 main a:hover {
-  border-bottom-color: var(--red-800);
+  color: var(--gray-950);
+  border-bottom-color: var(--gray-950);
 }
 
 .container {
