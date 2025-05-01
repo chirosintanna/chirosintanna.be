@@ -25,7 +25,7 @@
 
 body {
   font-family: 'Solway', serif;
-  background: var(--gray-100);
+  background-color: var(--gray-200);
 }
 
 svg {
@@ -111,7 +111,10 @@ header ul a.selected {
 
 main {
   font-size: 0.875rem;
-  background-color: var(--gray-200);
+}
+
+main img {
+  border-radius: 0.25rem;
 }
 
 .banner-image {
@@ -120,15 +123,19 @@ main {
   min-height: 30vw;
   object-fit: cover;
   object-position: bottom;
+  border-radius: 0;
 }
 
 main h2 {
   text-transform: uppercase;
-  margin-top: 0.5rem;
   font-weight: bold;
   letter-spacing: 1px;
   font-size: 1.125rem;
   line-height: 1.75rem;
+}
+
+main h2:not(:first-child) {
+  margin-top: 1rem;
 }
 
 main h3 {
@@ -157,11 +164,11 @@ main a {
 }
 
 main a:hover {
-  border-color: var(--red-800);
+  border-bottom-color: var(--red-800);
 }
 
 .container {
-  padding: 1.5rem 1rem;
+  padding: 1rem;
   max-width: 960px;
   margin: 0 auto;
 }
@@ -176,10 +183,6 @@ main a:hover {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-
-.images img {
-  border-radius: 0.25rem;
 }
 
 section.contrast {
