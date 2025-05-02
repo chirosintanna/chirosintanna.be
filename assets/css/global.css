@@ -214,13 +214,12 @@ main ul {
 
 main a {
   color: var(--red-800);
-  border-bottom: 1px solid var(--red-800);
-  transition: color 0.2s ease, border-color 0.2s ease;
+  text-decoration: underline;
+  transition: color 0.2s ease;
 }
 
 main a:hover {
   color: var(--gray-950);
-  border-bottom-color: var(--gray-950);
 }
 
 .container {
