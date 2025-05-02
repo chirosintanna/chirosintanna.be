@@ -9,7 +9,7 @@ if (editorButton) {
 
 function initialize() {
   if (localStorage.getItem(TOKEN_KEY)) {
-    editorButton.textContent = 'Bewerken'
+    editorButton.textContent = '[Bewerken]'
   } else {
     sessionStorage.removeItem(EDITING_KEY)
   }
@@ -38,7 +38,7 @@ function initialize() {
 function enableEditor() {
   sessionStorage.setItem(EDITING_KEY, 'true')
   document.body.classList.add('editing')
-  editorButton.textContent = 'Bewerken uitschakelen'
+  editorButton.textContent = '[Bewerken uitschakelen]'
   document.querySelectorAll('[data-edit]').forEach((e) => {
     e.addEventListener('click', (evt) => {
       if (!sessionStorage.getItem(EDITING_KEY)) {
@@ -57,7 +57,7 @@ function enableEditor() {
 function disableEditor() {
   sessionStorage.removeItem(EDITING_KEY)
   document.body.classList.remove('editing')
-  editorButton.textContent = 'Bewerken'
+  editorButton.textContent = '[Bewerken]'
 }
 
 async function makeEdit(key) {
