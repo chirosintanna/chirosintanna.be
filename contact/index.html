@@ -36,18 +36,20 @@
   </header>
   <main class="top-spacing bottom-spacing">
     <div class="container">
-      <h2>
-        Contact
-      </h2>
-      <p>
-        Voor of na de activiteit op zondag kunnen jullie ons altijd aanspreken indien er nog vragen 
-        zijn. We zijn ook via e-mail bereikbaar!
-      </p>
-      <h2>
-        Hoofdleiding
-      </h2>
+      <div data-edit="contact">
+        <h2>
+          Contact
+        </h2>
+        <p>
+          Voor of na de activiteit op zondag kunnen jullie ons altijd aanspreken indien er nog vragen 
+          zijn. We zijn ook via e-mail bereikbaar!
+        </p>
+      </div>
       <div class="split">
-        <div>
+        <div data-edit="contact-hoofdleiding">
+          <h2>
+            Hoofdleiding
+          </h2>
           <p>
             Voor algemene vragen kan je terecht bij onze hoofdleiding. Dit kan via e-mail of telefonisch:
           </p>
@@ -58,14 +60,16 @@
           </ul>
         </div>
         <div class="images">
-          <img src="/assets/img/hoofdleiding.jpg" alt="">
+          <picture data-edit="contact-hoofdleiding-afbeelding">
+            <img src="/assets/img/hoofdleiding.jpg" alt="">
+          </picture>
         </div>
       </div>
-      <h2>
-        Afdelingen
-      </h2>
       <div class="split">
-        <div>
+        <div data-edit="contact-afdelingen">
+          <h2>
+            Afdelingen
+          </h2>
           <p>
             Voor vragen aan de specifieke leidsters van je kind kan je ook terecht via e-mail:
           </p>
@@ -79,46 +83,53 @@
           </ul>
         </div>
         <div class="images">
-          <img src="/assets/img/leiding.jpg" alt="">
+          <picture data-edit="contact-afdelingen-afbeelding">
+            <img src="/assets/img/leiding.jpg" alt="">
+          </picture>
         </div>
       </div>
-      <h2>
-        Sociale media
-      </h2>
-      <p>
-        Je kan ons terugvinden op verschillende sociale media kanalen. De foto’s van onze 
-        activiteiten en evenementen worden op Facebook geplaatst.
-      </p>
-      <ul>
-        <li>Facebook: <a href="https://www.facebook.com/profile.php?id=100064319364670" target="_blank">Chiro Sint-Anna</a></li>
-        <li>Instagram: <a href="https://www.instagram.com/chiro.sintanna" target="_blank">chiro.sintanna</a></li>
-      </ul>
-      <p>
-        Je kan ons ook steunen via Trooper! Via onderstaande site kan je online shoppen en ons 
-        tegelijk steunen zonder extra kosten. Bij elke aankoop gaat er een klein percentage van het 
-        bedrag naar onze Chiro.
-      </p>
-      <a href="https://www.trooper.be/nl/trooperverenigingen/chirosintanna" target="_blank">www.trooper.be/nl/trooperverenigingen/chirosintanna</a>
+
+      <div data-edit="sociale-media">
+        <h2>
+          Sociale media
+        </h2>
+        <p>
+          Je kan ons terugvinden op verschillende sociale media kanalen. De foto’s van onze 
+          activiteiten en evenementen worden op Facebook geplaatst.
+        </p>
+        <ul>
+          <li>Facebook: <a href="https://www.facebook.com/profile.php?id=100064319364670" target="_blank">Chiro Sint-Anna</a></li>
+          <li>Instagram: <a href="https://www.instagram.com/chiro.sintanna" target="_blank">chiro.sintanna</a></li>
+        </ul>
+        <p>
+          Je kan ons ook steunen via Trooper! Via onderstaande site kan je online shoppen en ons 
+          tegelijk steunen zonder extra kosten. Bij elke aankoop gaat er een klein percentage van het 
+          bedrag naar onze Chiro.
+        </p>
+        <a href="https://www.trooper.be/nl/trooperverenigingen/chirosintanna" target="_blank">www.trooper.be/nl/trooperverenigingen/chirosintanna</a>
+      </div>
   
-      <h2>
-        Locatie
-      </h2>
-      <p>
-        Veerstraat 14, 9160 Lokeren
-      </p>
-      <p>
-        Activiteiten elke zondag van 14u tot 17u.
-      </p>
+      <div data-edit="locatie">
+        <h2>
+          Locatie
+        </h2>
+        <p>
+          Veerstraat 14, 9160 Lokeren
+        </p>
+        <p>
+          Activiteiten elke zondag van 14u tot 17u.
+        </p>
+      </div>
     </div>
   </main>
   <footer>
     <div class="container">
       <div>
         <p>Chiro Sint-Anna</p>
-        <p>Veerstraat 14</p>
-        <p>9160 Lokeren</p>
+        <p>Veerstraat 14, 9160 Lokeren</p>
         <p class="copyright">&copy; 2025 Chiro Sint-Anna</p>
         <p class="credits">Ontwikkeld door Miro Stuyven</p>
+        <p class="editor">Inloggen</p>
       </div>
       <div>
         <h3>Volg ons</h3>
@@ -133,5 +144,6 @@
       </div>
     </div>
   </footer>
+  <script type="module" src="/assets/js/editor.js"></script>
 </body>
 </html>
