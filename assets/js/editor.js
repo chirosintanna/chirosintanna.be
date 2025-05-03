@@ -30,7 +30,7 @@ function initialize() {
           localStorage.setItem(TOKEN_KEY, token)
           enableEditor()
         } else {
-          alert('Ongeldige token!')
+          showToast('Ongeldige token!', true)
         }
       })
     }
@@ -49,11 +49,11 @@ function enableEditor() {
       evt.preventDefault()
       makeEdit(e.getAttribute('data-edit'))
         .then((success) => {
-          if (success) alert('Succesvol bewerkt! Aanpassing is publiek binnen enkele seconden...')
+          if (success) showToast('Succesvol bewerkt! Aanpassing is publiek binnen enkele seconden...')
         })
         .catch((e) => {
           console.error(e)
-          alert(e instanceof Error ? e.message : `${e}`)
+          showToast(e instanceof Error ? e.message : `${e}`, true)
         })
     })
   })
@@ -92,7 +92,7 @@ async function makeEdit(key) {
       && !element.href.startsWith(`${location.protocol}//${location.hostname}`)
     ) {
       // Externe link
-      const newLink = await openModal('Link aanpassen', element.href)
+      const newLink = await openModal('Link aanpassen', { value: element.href })
       if (!newLink || element.href === newLink) {
         return false
       }
@@ -102,7 +102,7 @@ async function makeEdit(key) {
       element.href = newLink
     } else {
       // PDF document
-      const newFiles = await openModal('Document aanpassen', undefined, 'document')
+      const newFiles = await openModal('Document aanpassen', { type: 'file', accept: 'application/pdf' })
       if (!newFiles || newFiles.length === 0) {
         return false
       }
@@ -120,7 +120,7 @@ async function makeEdit(key) {
     if (!imgElement) {
       throw new Error('Kan dit element niet bewerken')
     }
-    const newFiles = await openModal('Afbeelding aanpassen', undefined, 'image')
+    const newFiles = await openModal('Afbeelding aanpassen', { type: 'file', accept: 'image/*', help: 'Tip: Je kan <a href="https://squoosh.app/" target="_blank">squoosh.app</a> gebruiken om een afbeelding kleiner te maken.' })
     if (!newFiles || newFiles.length === 0) {
       return false
     }
@@ -135,7 +135,7 @@ async function makeEdit(key) {
   } else if (element instanceof HTMLDivElement) {
     // Tekst
     const markdown = htmlToMarkdown(element)
-    const newMarkdown = await openModal('Tekst aanpassen', markdown, 'multiline')
+    const newMarkdown = await openModal('Tekst aanpassen', { value: markdown, multiline: true })
     if (!newMarkdown || markdown === newMarkdown) {
       return false
     }
@@ -212,10 +212,9 @@ async function uploadFile(path, key, file) {
 
 /**
  * @param {string} title
- * @param {string} inputValue
- * @param {'input' | 'multiline' | 'image', 'document'} type
+ * @param {{type: string, value?: string, multiline?: boolean, accept?: string, help?: string}} options
  */
-async function openModal(title, inputValue = '', type = 'input') {
+async function openModal(title, options = { type: 'text' }) {
   const container = document.createElement('div')
   container.classList.add('modal-container')
   document.body.append(container)
@@ -226,22 +225,27 @@ async function openModal(title, inputValue = '', type = 'input') {
   const heading = document.createElement('h2')
   heading.textContent = title
   modal.append(heading)
-  const input = document.createElement(type === 'multiline' ? 'textarea' : 'input')
-  if (type === 'multiline') {
+  const input = document.createElement(options.multiline ? 'textarea' : 'input')
+  if (options.multiline) {
     input.rows = 10
-  } else if (type === 'image') {
-    input.type = 'file'
-    input.accept = 'image/*'
-  } else if (type === 'document') {
-    input.type = 'file'
-    input.accept = 'application/pdf'
+  } else {
+    input.type = options.type
   }
-  if (type === 'input' || type === 'multiline') {
-    input.value = inputValue
+  if (options.type === 'file') {
+    input.accept = options.accept
+  } else {
+    if (options.value) {
+      input.value = options.value
+    }
     input.selectionStart = 0
     input.selectionEnd = 0
   }
   modal.append(input)
+  if (options.help) {
+    const help = document.createElement('p')
+    help.innerHTML = options.help
+    modal.append(help)
+  }
   const button = document.createElement('button')
   button.classList.add('btn')
   button.textContent = 'Opslaan'
@@ -251,11 +255,27 @@ async function openModal(title, inputValue = '', type = 'input') {
   const result = await new Promise((res) => {
     container.addEventListener('click', (e) => e.target === container ? res(null) : null)
     container.addEventListener('keydown', (e) => e.key === 'Escape' ? res(null) : null)
-    button.addEventListener('click', () => res(type === 'image' || type === 'document' ? input.files : input.value))
+    button.addEventListener('click', () => res(options.type === 'file' ? input.files : input.value))
   })
 
   document.querySelectorAll('.modal-container').forEach((e) => e.remove())
   return result
+}
+
+/**
+ * @param {string} title
+ * @param {boolean} error
+ */
+function showToast(title, error = false) {
+  document.querySelectorAll('.toast').forEach((e) => e.remove())
+  const toast = document.createElement('toast')
+  toast.textContent = title
+  toast.classList.add('toast')
+  if (error) {
+    toast.classList.add('toast-error')
+  }
+  document.body.append(toast)
+  setTimeout(() => toast.remove(), 8000)
 }
 
 /**

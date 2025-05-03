@@ -470,9 +470,36 @@ footer .editor:hover {
   font-size: 0.875rem;
 }
 
+.modal p {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--gray-700);
+}
+
+.modal a {
+  text-decoration: underline;
+}
+
+.modal a:hover {
+  color: var(--gray-950);
+}
+
 .modal input::file-selector-button {
   background-color: var(--gray-400);
   padding: 0.25rem;
   border-radius: 0.25rem;
   cursor: pointer;
+}
+
+.toast {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  padding: 0.25rem 1rem;
+  background-color: var(--gray-400);
+  border-radius: 0.25rem;
+}
+
+.toast-error {
+  background-color: var(--red-500);
 }
