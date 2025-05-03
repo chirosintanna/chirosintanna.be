@@ -272,11 +272,6 @@ footer .copyright {
   color: var(--gray-500);
 }
 
-footer .credits {
-  font-size: 0.825rem;
-  color: var(--gray-500);
-}
-
 footer h3 {
   font-size: 1.25rem;
 }
