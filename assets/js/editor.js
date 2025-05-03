@@ -87,60 +87,53 @@ async function makeEdit(key) {
   let hasChanged = false
 
   // 2. Element aanpassen in de DOM
-  if (element instanceof HTMLAnchorElement && element.href.startsWith('https://')) {
-    const newLink = await openModal('Link aanpassen', element.href)
-    if (!newLink || element.href === newLink) {
-      return false
+  if (element instanceof HTMLAnchorElement) {
+    if (element.href.startsWith('https://')
+      && !element.href.startsWith(`${location.protocol}//${location.hostname}`)
+    ) {
+      // Externe link
+      const newLink = await openModal('Link aanpassen', element.href)
+      if (!newLink || element.href === newLink) {
+        return false
+      }
+      if (!newLink.startsWith('https://')) {
+        throw new Error('Link moet beginnen met https://')
+      }
+      element.href = newLink
+    } else {
+      // PDF document
+      const newFiles = await openModal('Document aanpassen', undefined, 'document')
+      if (!newFiles || newFiles.length === 0) {
+        return false
+      }
+      const pdfFile = newFiles[0]
+      if (pdfFile.size > 25 * 1024 * 1024) {
+        throw new Error('Document is te groot (max 25MB)')
+      }
+      const pdfPath = `assets/pdf/${encodeURIComponent(pdfFile.name)}`
+      await uploadFile(pdfPath, key, pdfFile)
+      element.href = `/${pdfPath}`
     }
-    if (!newLink.startsWith('https://')) {
-      throw new Error('Link moet beginnen met https://')
-    }
-    element.href = newLink
   } else if (element instanceof HTMLPictureElement) {
+    // Afbeelding
     const imgElement = element.querySelector('img')
     if (!imgElement) {
       throw new Error('Kan dit element niet bewerken')
     }
-    const newImage = await openModal('Afbeelding aanpassen', undefined, 'image')
-    if (!newImage || newImage.length === 0) {
+    const newFiles = await openModal('Afbeelding aanpassen', undefined, 'image')
+    if (!newFiles || newFiles.length === 0) {
       return false
     }
-    const imageFile = newImage[0]
+    const imageFile = newFiles[0]
     if (imageFile.size > 2 * 1024 * 1024) {
       throw new Error('Afbeelding is te groot (max 2MB)')
     }
     const imagePath = `assets/img/${encodeURIComponent(imageFile.name)}`
-    const imageBase64 = await new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => resolve(reader.result.split(',')[1])
-      reader.onerror = reject
-      reader.readAsDataURL(imageFile)
-    })
-    const checkRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${imagePath}`, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
-      },
-    })
-    const existingSha = checkRes.ok ? (await checkRes.json()).sha : undefined
-    const uploadRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${imagePath}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: `🤖 Upload ${key}`,
-        content: imageBase64,
-        sha: existingSha,
-      }),
-    })
-    if (!uploadRes.ok) {
-      const uploadData = await uploadRes.json()
-      throw new Error(`Fout tijdens uploaden: ${uploadRes.status} ${uploadData.message}`)
-    }
+    await uploadFile(imagePath, key, imageFile)
     hasChanged = true
     imgElement.src = `/${imagePath}`
   } else if (element instanceof HTMLDivElement) {
+    // Tekst
     const markdown = htmlToMarkdown(element)
     const newMarkdown = await openModal('Tekst aanpassen', markdown, 'multiline')
     if (!newMarkdown || markdown === newMarkdown) {
@@ -182,9 +175,45 @@ async function makeEdit(key) {
 }
 
 /**
+ * @param {string} path
+ * @param {string} key
+ * @param {File} file
+ */
+async function uploadFile(path, key, file) {
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result.split(',')[1])
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+  const checkRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
+    },
+  })
+  const existingSha = checkRes.ok ? (await checkRes.json()).sha : undefined
+  const uploadRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: `🤖 Upload ${key}`,
+      content: base64,
+      sha: existingSha,
+    }),
+  })
+  if (!uploadRes.ok) {
+    const uploadData = await uploadRes.json()
+    throw new Error(`Fout tijdens uploaden: ${uploadRes.status} ${uploadData.message}`)
+  }
+}
+
+/**
  * @param {string} title
  * @param {string} inputValue
- * @param {'input' | 'multiline' | 'image'} type
+ * @param {'input' | 'multiline' | 'image', 'document'} type
  */
 async function openModal(title, inputValue = '', type = 'input') {
   const container = document.createElement('div')
@@ -203,6 +232,9 @@ async function openModal(title, inputValue = '', type = 'input') {
   } else if (type === 'image') {
     input.type = 'file'
     input.accept = 'image/*'
+  } else if (type === 'document') {
+    input.type = 'file'
+    input.accept = 'application/pdf'
   }
   if (type === 'input' || type === 'multiline') {
     input.value = inputValue
@@ -218,7 +250,8 @@ async function openModal(title, inputValue = '', type = 'input') {
 
   const result = await new Promise((res) => {
     container.addEventListener('click', (e) => e.target === container ? res(null) : null)
-    button.addEventListener('click', () => res(type === 'image' ? input.files : input.value))
+    container.addEventListener('keydown', (e) => e.key === 'Escape' ? res(null) : null)
+    button.addEventListener('click', () => res(type === 'image' || type === 'document' ? input.files : input.value))
   })
 
   document.querySelectorAll('.modal-container').forEach((e) => e.remove())
