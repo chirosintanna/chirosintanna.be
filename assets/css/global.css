@@ -231,18 +231,21 @@ main a:hover {
   gap: 1rem;
 }
 
-@media screen and (min-width: 560px) {
-  .split {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  }
-}
-
 .images {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   max-width: 320px;
-  margin-top: 1.5rem;
+}
+
+@media screen and (min-width: 560px) {
+  .split {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .images {
+    margin-top: 1.5rem;
+  }
 }
 
 .contrast {
