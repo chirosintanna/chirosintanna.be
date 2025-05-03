@@ -84,6 +84,7 @@ async function makeEdit(key) {
   const parser = new DOMParser()
   const doc = parser.parseFromString(text, 'text/html')
   const element = doc.querySelector(`[data-edit=${key}]`)
+  let hasChanged = false
 
   // 2. Element aanpassen in de DOM
   if (element instanceof HTMLAnchorElement && element.href.startsWith('https://')) {
@@ -96,10 +97,52 @@ async function makeEdit(key) {
     }
     element.href = newLink
   } else if (element instanceof HTMLPictureElement) {
-    throw new Error('Afbeeldingen bewerken is nog niet mogelijk')
+    const imgElement = element.querySelector('img')
+    if (!imgElement) {
+      throw new Error('Kan dit element niet bewerken')
+    }
+    const newImage = await openModal('Afbeelding aanpassen', undefined, 'image')
+    if (!newImage || newImage.length === 0) {
+      return false
+    }
+    const imageFile = newImage[0]
+    if (imageFile.size > 2 * 1024 * 1024) {
+      throw new Error('Afbeelding is te groot (max 2MB)')
+    }
+    const imagePath = `assets/img/${encodeURIComponent(imageFile.name)}`
+    const imageBase64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result.split(',')[1])
+      reader.onerror = reject
+      reader.readAsDataURL(imageFile)
+    })
+    const checkRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${imagePath}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
+      },
+    })
+    const existingSha = checkRes.ok ? (await checkRes.json()).sha : undefined
+    const uploadRes = await fetch(`https://api.github.com/repos/${REPO}/contents/${imagePath}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `🤖 Upload ${key}`,
+        content: imageBase64,
+        sha: existingSha,
+      }),
+    })
+    if (!uploadRes.ok) {
+      const uploadData = await uploadRes.json()
+      throw new Error(`Fout tijdens uploaden: ${uploadRes.status} ${uploadData.message}`)
+    }
+    hasChanged = true
+    imgElement.src = `/${imagePath}`
   } else if (element instanceof HTMLDivElement) {
     const markdown = htmlToMarkdown(element)
-    const newMarkdown = await openModal('Tekst aanpassen', markdown, true)
+    const newMarkdown = await openModal('Tekst aanpassen', markdown, 'multiline')
     if (!newMarkdown || markdown === newMarkdown) {
       return false
     }
@@ -116,7 +159,7 @@ async function makeEdit(key) {
     .replace(/\n+<\/body>/, '\n</body>')
   const newText = `<!DOCTYPE html>\n${documentText}\n`
   if (text === newText) {
-    return false
+    return hasChanged
   }
   const newTextUtf8 = unescape(encodeURIComponent(newText))
   const putRes = await fetch (`https://api.github.com/repos/${REPO}/contents/${path}`, {
@@ -141,9 +184,9 @@ async function makeEdit(key) {
 /**
  * @param {string} title
  * @param {string} inputValue
- * @param {boolean} multiline
+ * @param {'input' | 'multiline' | 'image'} type
  */
-async function openModal(title, inputValue = '', multiline = false) {
+async function openModal(title, inputValue = '', type = 'input') {
   const container = document.createElement('div')
   container.classList.add('modal-container')
   document.body.append(container)
@@ -154,18 +197,28 @@ async function openModal(title, inputValue = '', multiline = false) {
   const heading = document.createElement('h2')
   heading.textContent = title
   modal.append(heading)
-  const input = document.createElement(multiline ? 'textarea' : 'input')
-  input.rows = 10;
-  input.value = inputValue
+  const input = document.createElement(type === 'multiline' ? 'textarea' : 'input')
+  if (type === 'multiline') {
+    input.rows = 10
+  } else if (type === 'image') {
+    input.type = 'file'
+    input.accept = 'image/*'
+  }
+  if (type === 'input' || type === 'multiline') {
+    input.value = inputValue
+    input.selectionStart = 0
+    input.selectionEnd = 0
+  }
   modal.append(input)
   const button = document.createElement('button')
   button.classList.add('btn')
   button.textContent = 'Opslaan'
   modal.append(button)
+  input.focus()
 
   const result = await new Promise((res) => {
     container.addEventListener('click', (e) => e.target === container ? res(null) : null)
-    button.addEventListener('click', () => res(input.value))
+    button.addEventListener('click', () => res(type === 'image' ? input.files : input.value))
   })
 
   document.querySelectorAll('.modal-container').forEach((e) => e.remove())

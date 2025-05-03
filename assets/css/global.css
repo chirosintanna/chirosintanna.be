@@ -469,3 +469,10 @@ footer .editor:hover {
   border-radius: 0.25rem;
   font-size: 0.875rem;
 }
+
+.modal input::file-selector-button {
+  background-color: var(--gray-400);
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
