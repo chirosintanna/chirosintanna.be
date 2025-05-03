@@ -21,17 +21,19 @@ function initialize() {
     if (sessionStorage.getItem(EDITING_KEY)) {
       disableEditor()
       return
+    } else if (localStorage.getItem(TOKEN_KEY)) {
+      enableEditor()
+    } else {
+      openModal('Inloggen').then((token) => {
+        if (!token) return
+        if (token.startsWith('github_pat_')) {
+          localStorage.setItem(TOKEN_KEY, token)
+          enableEditor()
+        } else {
+          alert('Ongeldige token!')
+        }
+      })
     }
-    if (localStorage.getItem(TOKEN_KEY) === null) {
-      const token = prompt('Inloggen met github_pat')
-      if (token && token.startsWith('github_pat_')) {
-        localStorage.setItem(TOKEN_KEY, token)
-      } else {
-        alert('Ongeldige token!')
-        return
-      }
-    }
-    enableEditor()
   })
 }
 
@@ -85,7 +87,7 @@ async function makeEdit(key) {
 
   // 2. Element aanpassen in de DOM
   if (element instanceof HTMLAnchorElement && element.href.startsWith('https://')) {
-    const newLink = prompt('Link aanpassen', element.href)
+    const newLink = await openModal('Link aanpassen', element.href)
     if (!newLink || element.href === newLink) {
       return false
     }
@@ -97,7 +99,7 @@ async function makeEdit(key) {
     throw new Error('Afbeeldingen bewerken is nog niet mogelijk')
   } else if (element instanceof HTMLDivElement) {
     const markdown = htmlToMarkdown(element)
-    const newMarkdown = prompt('Tekst aanpassen', markdown)
+    const newMarkdown = await openModal('Tekst aanpassen', markdown, true)
     if (!newMarkdown || markdown === newMarkdown) {
       return false
     }
@@ -113,6 +115,9 @@ async function makeEdit(key) {
     .replace('</body></html>', '</body>\n</html>')
     .replace(/\n+<\/body>/, '\n</body>')
   const newText = `<!DOCTYPE html>\n${documentText}\n`
+  if (text === newText) {
+    return false
+  }
   const newTextUtf8 = unescape(encodeURIComponent(newText))
   const putRes = await fetch (`https://api.github.com/repos/${REPO}/contents/${path}`, {
     method: 'PUT',
@@ -134,6 +139,40 @@ async function makeEdit(key) {
 }
 
 /**
+ * @param {string} title
+ * @param {string} inputValue
+ * @param {boolean} multiline
+ */
+async function openModal(title, inputValue = '', multiline = false) {
+  const container = document.createElement('div')
+  container.classList.add('modal-container')
+  document.body.append(container)
+  const modal = document.createElement('div')
+  modal.classList.add('modal')
+  container.append(modal)
+
+  const heading = document.createElement('h2')
+  heading.textContent = title
+  modal.append(heading)
+  const input = document.createElement(multiline ? 'textarea' : 'input')
+  input.rows = 10;
+  input.value = inputValue
+  modal.append(input)
+  const button = document.createElement('button')
+  button.classList.add('btn')
+  button.textContent = 'Opslaan'
+  modal.append(button)
+
+  const result = await new Promise((res) => {
+    container.addEventListener('click', (e) => e.target === container ? res(null) : null)
+    button.addEventListener('click', () => res(input.value))
+  })
+
+  document.querySelectorAll('.modal-container').forEach((e) => e.remove())
+  return result
+}
+
+/**
  * @param {HTMLDivElement} element
  */
 function htmlToMarkdown(element) {
@@ -141,7 +180,7 @@ function htmlToMarkdown(element) {
   for (const child of element.children) {
     if (child instanceof HTMLHeadingElement) {
       const prefix = {H1: '#', H2: '##', H3: '###'}[child.tagName] ?? '####'
-      md += `${prefix} ${child.textContent.replace(/\s+/g, ' ').trim()}\n`
+      md += `${prefix} ${child.textContent.replace(/\s+/g, ' ').trim()}\n\n`
     } else if (child instanceof HTMLParagraphElement) {
       md += `${inlineHtmlToMarkdown(child)}\n\n`
     } else if (child instanceof HTMLUListElement) {
@@ -153,7 +192,7 @@ function htmlToMarkdown(element) {
       throw new Error('Deze tekst is te complex om te bewerken.')
     }
   }
-  return md.trimEnd()
+  return md.trimEnd() + '\n'
 }
 
 /**
