@@ -366,7 +366,6 @@ footer .editor:hover {
 /* EDITOR */
 
 .editing [data-edit] {
-  display: block;
   margin: 1.5rem 2rem 1.5rem 0.5rem;
   position: relative;
   cursor: pointer;
@@ -423,10 +422,6 @@ footer .editor:hover {
   left: unset;
   right: 8px;
   bottom: 8px;
-}
-
-.editing .afdeling picture[data-edit] {
-  margin-top: auto;
 }
 
 .modal-container {
