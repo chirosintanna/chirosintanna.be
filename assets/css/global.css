@@ -228,7 +228,7 @@ main a:hover {
 .split {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1rem;
+  gap: 0.5rem 1rem;
 }
 
 .images {
@@ -246,6 +246,12 @@ main a:hover {
   .images {
     margin-top: 1.5rem;
   }
+}
+
+.split-fair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
 }
 
 .contrast {
