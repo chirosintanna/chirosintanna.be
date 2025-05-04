@@ -219,6 +219,11 @@ main a:hover {
   color: var(--gray-950);
 }
 
+.contrast {
+  background-color: var(--gray-900);
+  color: var(--gray-200);
+}
+
 .container {
   padding: 0.5rem 1rem 1rem;
   max-width: 960px;
@@ -254,9 +259,31 @@ main a:hover {
   gap: 0.5rem;
 }
 
-.contrast {
-  background-color: var(--gray-900);
-  color: var(--gray-200);
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem 3rem;
+}
+
+@media screen and (min-width: 560px) {
+  .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 860px) {
+  .cards {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-spacer {
+  margin-top: auto;
 }
 
 /* FOOTER */
@@ -307,35 +334,6 @@ footer .editor {
 
 footer .editor:hover {
   text-decoration: underline;
-}
-
-/* AFDELINGEN */
-
-.afdelingen {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3rem;
-}
-
-@media screen and (min-width: 560px) {
-  .afdelingen {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media screen and (min-width: 860px) {
-  .afdelingen {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-}
-
-.afdeling {
-  display: flex;
-  flex-direction: column;
-}
-
-.afdeling picture {
-  margin-top: auto;
 }
 
 /* COMPONENTS */
