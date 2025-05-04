@@ -84,7 +84,9 @@ async function makeEdit(key) {
   const parser = new DOMParser()
   const doc = parser.parseFromString(text, 'text/html')
   const element = doc.querySelector(`[data-edit=${key}]`)
+
   let hasChanged = false
+  let commitMessage = undefined
 
   // 2. Element aanpassen in de DOM
   if (element instanceof HTMLAnchorElement) {
@@ -100,6 +102,7 @@ async function makeEdit(key) {
         throw new Error('Link moet beginnen met https://')
       }
       element.href = newLink
+      commitMessage = `🔗 Wijzig link ${key}`
     } else {
       // PDF document
       const newFiles = await openModal('Document aanpassen', { type: 'file', accept: 'application/pdf' })
@@ -113,6 +116,7 @@ async function makeEdit(key) {
       const pdfPath = `assets/pdf/${encodeURIComponent(pdfFile.name)}`
       await uploadFile(pdfPath, key, pdfFile)
       element.href = `/${pdfPath}`
+      commitMessage = `📄 Wijzig document ${key}`
     }
   } else if (element instanceof HTMLPictureElement) {
     // Afbeelding
@@ -132,6 +136,7 @@ async function makeEdit(key) {
     await uploadFile(imagePath, key, imageFile)
     hasChanged = true
     imgElement.src = `/${imagePath}`
+    commitMessage = `🖼️ Wijzig afbeelding ${key}`
   } else if (element instanceof HTMLDivElement) {
     // Tekst
     const markdown = htmlToMarkdown(element)
@@ -162,7 +167,7 @@ async function makeEdit(key) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: `🤖 Bewerk ${key}`,
+      message: commitMessage ?? `✏️ Bewerk ${key}`,
       content: btoa(newTextUtf8),
       sha: getData.sha,
     })
@@ -199,7 +204,7 @@ async function uploadFile(path, key, file) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      message: `🤖 Upload ${key}`,
+      message: `⬆️ Upload ${key}: ${decodeURIComponent(path)}`,
       content: base64,
       sha: existingSha,
     }),
