@@ -105,7 +105,11 @@ async function makeEdit(key) {
       commitMessage = `🔗 Wijzig link ${key}`
     } else {
       // PDF document
-      const newFiles = await openModal('Document aanpassen', { type: 'file', accept: 'application/pdf' })
+      const newFiles = await openModal('Document aanpassen', {
+        subtitle: `Huidig bestand: <a href="${element.href}" target="_blank">${decodeURIComponent(element.href.split('/').pop())}</a>`,
+        type: 'file',
+        accept: 'application/pdf',
+      })
       if (!newFiles || newFiles.length === 0) {
         return false
       }
@@ -217,7 +221,14 @@ async function uploadFile(path, key, file) {
 
 /**
  * @param {string} title
- * @param {{type: string, value?: string, multiline?: boolean, accept?: string, help?: string}} options
+ * @param {{
+ *   subtitle?: string,
+ *   type: string,
+ *   value?: string,
+ *   multiline?: boolean,
+ *   accept?: string,
+ *   help?: string,
+ * }} options
  */
 async function openModal(title, options = { type: 'text' }) {
   const container = document.createElement('div')
@@ -230,6 +241,12 @@ async function openModal(title, options = { type: 'text' }) {
   const heading = document.createElement('h2')
   heading.textContent = title
   modal.append(heading)
+  if (options.subtitle) {
+    const subtitle = document.createElement('p')
+    subtitle.innerHTML = options.subtitle
+    modal.append(subtitle)
+  }
+
   const input = document.createElement(options.multiline ? 'textarea' : 'input')
   if (options.multiline) {
     input.rows = 10
